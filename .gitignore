@@ -54,3 +54,6 @@ coverage.xml
 # Sphinx documentation
 docs/_build/
 
+# ignore local settings file intended for environment-specific settings
+settings
+local_settings.py
