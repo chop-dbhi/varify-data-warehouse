@@ -3,6 +3,8 @@ from optparse import make_option
 from django.core.management.base import BaseCommand, CommandError
 from django.db import connections, transaction, DEFAULT_DB_ALIAS, DatabaseError
 from vdw.assessments.models import Assessment
+from vdw.samples.models import Project
+from vdw.signals import pre_delete_project
 
 log = logging.getLogger(__name__)
 
@@ -109,6 +111,10 @@ class Command(BaseCommand):
                             WHERE project.id = %s
                     )
                 ''', [project_id])
+
+                # Alert listeners to project deletion.
+                pre_delete_project.send(
+                    sender=Project, pk=project_id, cursor=cursor)
 
                 # Remove samples
                 cursor.execute('''
