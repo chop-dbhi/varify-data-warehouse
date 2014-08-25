@@ -3,6 +3,7 @@ from optparse import make_option
 from django.core.management.base import BaseCommand, CommandError
 from django.db import connections, transaction, DEFAULT_DB_ALIAS, DatabaseError
 from vdw.samples.models import Sample
+from vdw.signals import pre_delete_sample
 
 log = logging.getLogger(__name__)
 
@@ -69,7 +70,9 @@ class Command(BaseCommand):
                     DELETE FROM sample_manifest WHERE sample_id IN ({0})
                 '''.format(columns), valid_ids)
 
-                # Remove sample
+                pre_delete_sample.send(
+                    sender=Sample, pk_set=valid_ids, cursor=cursor)
+
                 cursor.execute('''
                     DELETE FROM sample WHERE sample.id IN ({0})
                 '''.format(columns), valid_ids)
