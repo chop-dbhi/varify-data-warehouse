@@ -1,0 +1,12 @@
+include LICENSE
+include CHANGELOG
+include README.md
+include requirements.txt
+
+recursive-include vdw/assessments/fixtures *
+recursive-include vdw/genome/fixtures *
+recursive-include vdw/variants/fixtures *
+
+global-exclude .DS_Store
+
+prune tests
