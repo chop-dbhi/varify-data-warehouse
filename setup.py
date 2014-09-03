@@ -36,7 +36,7 @@ kwargs = {
     'tests_require': ['httpretty'],
     'author': 'Byron Ruth',
     'author_email': 'b@devel.io',
-    'description': 'Models and loader for processing, storing, and querying genetic data',
+    'description': 'Models and loader for processing, storing, and querying genetic data',  # noqa
     'license': 'BSD',
     'keywords': 'vcf varify harvest orm genome',
     'url': 'http://github.com/cbmi/varify-data-warehouse',
