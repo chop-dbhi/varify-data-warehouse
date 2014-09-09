@@ -15,6 +15,10 @@ PROJECT_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)),
 # be added to this list since Django will not recognize them as apps anyway.
 # An app is really only an "app" if a `models` module or package is defined.
 INSTALLED_APPS = (
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sites',
+
     'vdw',
 
     'vdw.raw',
