@@ -53,6 +53,12 @@ class ResultStream(VCFPGCopyEditor):
         # Remove variant specific parts
         cleaned = cleaned[4:]
 
+        # in_dbsnp is not nullable so we need to replace null values with
+        # False for this line to be valid. in_dbsnp is the first column as
+        # determined by the `output_columns` defined above.
+        if cleaned[0] == '\\N':
+            cleaned[0] = False
+
         # can these be indexed?
         call = record.genotype(self.vcf_sample)
 

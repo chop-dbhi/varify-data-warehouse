@@ -338,7 +338,7 @@ class Result(TimestampedModel):
 
     phred_scaled_likelihood = models.TextField(null=True, blank=True)
 
-    in_dbsnp = models.NullBooleanField(blank=True)
+    in_dbsnp = models.BooleanField(default=False, db_index=True)
     downsampling = models.NullBooleanField(blank=True)
     spanning_deletions = models.FloatField(null=True, blank=True)
     mq = models.FloatField('mapping quality', null=True, blank=True)
