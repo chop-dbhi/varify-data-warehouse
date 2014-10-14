@@ -12,7 +12,7 @@ package manager or binaries that can be easily installed. Most of the below
 links describe alternate download and install methods.
 
 On Mac OS X, [Homebrew](http://mxcl.github.com/homebrew/) is the recommended
-way to install most of these of these libraries.
+way to install most of these libraries.
 
 - [Python 2.6+](http://python.org/download/releases/2.6.9/)
 - [Redis 2.6+](http://redis.io/download)
@@ -216,7 +216,7 @@ You can monitor the workers and the queues using the `rq-dashboard` or `rqinfo`.
 
 #### Post-Load
 
-After the batch of samples have been loaded, a two more commands need to be executed to update the annotations and cohort frequencies. These are performed _post-load_ for performance reasons.
+After the batch of samples have been loaded, two more commands need to be executed to update the annotations and cohort frequencies. These are performed _post-load_ for performance reasons.
 
 ```bash
 ./bin/manage.py variants load --evs --1000g --sift --polyphen2 > variants.load.txt 2>&1 &
@@ -264,9 +264,9 @@ To prevent integrity errors, workers will need to consult one or more
 centralized caches to check if the current variant has been _addressed_
 already. If this is the case, the variant will be skipped by the worker.
 
-This incurs a second issue in that downstream jobs that depend on the existence
-of some data that does not yet exist because another worker has not yet
-committed it's data. In this case, non-matches will be queued up in the
-`deferred` queue that can be run at a later time, after the `default` queue
-is empty or in parallel with the `default` queue.
+This incurs a second issue in that downstream jobs depend on the existence of
+some data that does not yet exist because another worker has not yet committed
+its data. In this case, non-matches will be queued up in the `deferred` queue
+that can be run at a later time, after the `default` queue is empty or in
+parallel with the `default` queue.
 
