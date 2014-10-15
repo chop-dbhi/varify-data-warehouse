@@ -9,3 +9,7 @@ version = 0
 [vcf]
 file = locus_1.vcf
 md5 = f67a6913ee83345657a6e790c6f5feee
+
+[genome]
+name = Genome Reference Consortium GRCh37
+version = hg19
