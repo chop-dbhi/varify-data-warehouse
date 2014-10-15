@@ -60,11 +60,6 @@ class Command(BaseCommand):
                     DELETE FROM sample_result WHERE sample_id IN ({0})
                 '''.format(columns), valid_ids)
 
-                # Remove runs from sample
-                cursor.execute('''
-                    DELETE FROM sample_run WHERE sample_id IN ({0})
-                '''.format(columns), valid_ids)
-
                 # Remove sample manifest
                 cursor.execute('''
                     DELETE FROM sample_manifest WHERE sample_id IN ({0})

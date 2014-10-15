@@ -6,7 +6,7 @@ from sts.contextmanagers import transition
 from objectset.models import ObjectSet, SetObject
 from vdw.core.models import BigAutoField, BigForeignKey, LabeledModel, \
     TimestampedModel
-from vdw.genome.models import Genome, Genotype
+from vdw.genome.models import Genotype
 from vdw.variants.models import Variant
 
 # The catch all project. If this is None, samples will not be added to
@@ -296,19 +296,6 @@ class CohortVariant(models.Model):
     class Meta(object):
         db_table = 'cohort_variant'
         unique_together = ('variant', 'cohort')
-
-
-class SampleRun(TimestampedModel):
-    "Sample run through the pipeline."
-    sample = models.ForeignKey(Sample)
-    genome = models.ForeignKey(Genome, null=True, blank=True)
-    completed = models.DateTimeField(null=True, blank=True)
-
-    class Meta(object):
-        db_table = 'sample_run'
-
-    def __unicode__(self):
-        return '{0} on {1}'.format(self.sample, self.completed)
 
 
 class Result(TimestampedModel):
