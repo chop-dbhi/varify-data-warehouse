@@ -3,6 +3,7 @@ import logging
 import sts
 import time
 import vcf
+from django.conf import settings
 from django.db import connections, transaction
 from sts.contextmanagers import transition
 from vdw.pipeline import checks, job, ManifestReader
@@ -51,25 +52,38 @@ def check_sample_section(manifest):
 def load_samples(manifest_path, database, **kwargs):
     manifest = ManifestReader(manifest_path)
 
-    # Ensure the sample is marked to be loaded..
+    # If a specific version of the genome is required then make sure the
+    # MANIFEST lists that version or abort the load process.
+    genome_version = getattr(settings, 'VDW_REQUIRED_GENOME_VERSION', None)
+    if genome_version:
+        genome_info = manifest.section('genome')
+
+        if not genome_info:
+            log.warn('Genome version "{0}" is required but genome section is '
+                     'not included in MANIFEST({1}). Skipping sample.'
+                     .format(genome_version, manifest_path))
+            return
+
+        if genome_version != genome_info['version']:
+            log.warn(
+                'Genome version "{0}" is required but version "{1}" was found '
+                'in the MANIFEST({2}). Skipping sample.'
+                .format(genome_version, genome_info['version'], manifest_path))
+            return
+
+    # Ensure the sample is marked to be loaded.
     if not manifest.marked_for_load():
         log.info('Sample not marked for load', extra={
             'manifest_path': manifest_path,
         })
         return
 
-    # Ensure the sample section is valid..
+    # Ensure the sample section is valid.
     if not check_sample_section(manifest):
-        log.info('Manifest sample section is not valid', extra={
+        log.warn('Manifest sample section is not valid', extra={
             'manifest_path': manifest_path,
         })
         return
-
-    # [sample]
-    # project = PCGC
-    # batch = OTHER
-    # sample = 1-03131
-    # version = 1
 
     sample_info = manifest.section('sample')
     vcf_info = manifest.section('vcf')
@@ -79,7 +93,7 @@ def load_samples(manifest_path, database, **kwargs):
     vcf_path = os.path.join(os.path.dirname(manifest_path), vcf_info['file'])
 
     with open(vcf_path) as file_obj:
-        log.debug("opening {0} in load_samples".format(vcf_path))
+        log.debug('opening {0} in load_samples'.format(vcf_path))
         reader = vcf.Reader(file_obj)
         samples = reader.samples
 
@@ -89,7 +103,7 @@ def load_samples(manifest_path, database, **kwargs):
         pretty_names = samples
 
     if len(samples) != len(pretty_names):
-        log.info('Length of comma-delimited samples field in manifest '
+        log.warn('Length of comma-delimited samples field in manifest '
                  'does not match the length of samples in {0}'
                  .format(vcf_info['file']))
         return
@@ -143,7 +157,7 @@ def load_results(manifest_path, database, **kwargs):
 
     # Ensure the sample section is valid..
     if not check_sample_section(manifest):
-        log.info('Manifest sample section is not valid', extra={
+        log.warn('Manifest sample section is not valid', extra={
             'manifest_path': manifest_path,
         })
         return
@@ -154,7 +168,7 @@ def load_results(manifest_path, database, **kwargs):
     # samples.
     vcf_path = os.path.join(os.path.dirname(manifest_path), vcf_info['file'])
     with open(vcf_path) as file_obj:
-        log.debug("opening {0} in load_samples".format(vcf_path))
+        log.debug('opening {0} in load_samples'.format(vcf_path))
         reader = vcf.Reader(file_obj)
         samples = reader.samples
     if 'sample' in sample_info:
