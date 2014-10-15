@@ -261,16 +261,6 @@
     },
 
     {
-        "model": "genome.genome",
-        "pk": 1,
-        "fields": {
-            "name": "Genome Reference Consortium GRCh37",
-            "version": "hg19",
-            "released": "2009-02-01"
-        }
-    },
-
-    {
         "model": "genome.genotype",
         "pk": 1,
         "fields": {

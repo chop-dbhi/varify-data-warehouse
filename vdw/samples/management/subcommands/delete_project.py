@@ -94,15 +94,6 @@ class Command(BaseCommand):
                     )
                 ''', [project_id])
 
-                # Remove runs of samples
-                cursor.execute('''
-                    DELETE FROM sample_run WHERE sample_id IN (
-                        SELECT sample.id FROM sample INNER JOIN project ON
-                            (sample.project_id = project.id)
-                            WHERE project.id = %s
-                    )
-                ''', [project_id])
-
                 # Remove sample manifest
                 cursor.execute('''
                     DELETE FROM sample_manifest WHERE sample_id IN (

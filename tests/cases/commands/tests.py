@@ -5,7 +5,7 @@ from django.test import TestCase
 from django.test.utils import override_settings
 from vdw.assessments.models import Assessment, Pathogenicity, ParentalResult, \
     AssessmentCategory
-from vdw.samples.models import Sample, CohortSample, Result, SampleRun, \
+from vdw.samples.models import Sample, CohortSample, Result, \
     SampleManifest, Project, Cohort, Batch, CohortVariant, ResultScore
 from vdw.variants.models import Variant
 from ..base import QueueTestCase
@@ -65,8 +65,6 @@ class DeleteTestCase(QueueTestCase):
             CohortSample.objects.filter(set_object__id=sample_id).count(),
             'sample_result':
             Result.objects.filter(sample__id=sample_id).count(),
-            'sample_run':
-            SampleRun.objects.filter(sample__id=sample_id).count(),
             'sample_manifest':
             SampleManifest.objects.filter(sample__id=sample_id).count(),
         }
@@ -77,7 +75,6 @@ class DeleteTestCase(QueueTestCase):
         counts = {
             'cohort_sample': CohortSample.objects.count(),
             'sample_result': Result.objects.count(),
-            'sample_run': SampleRun.objects.count(),
             'sample_manifest': SampleManifest.objects.count(),
             'sample': Sample.objects.count()
         }
@@ -92,8 +89,6 @@ class DeleteTestCase(QueueTestCase):
         self.assertEqual(
             counts['sample_result'] - sample_counts['sample_result'],
             Result.objects.count())
-        self.assertEqual(counts['sample_run'] - sample_counts['sample_run'],
-                         SampleRun.objects.count())
         self.assertEqual(
             counts['sample_manifest'] - sample_counts['sample_manifest'],
             SampleManifest.objects.count())
@@ -138,7 +133,6 @@ class DeleteTestCase(QueueTestCase):
         # is not associated with any project.
         self.assertEqual(1, Cohort.objects.count())
         self.assertEqual(0, Result.objects.count())
-        self.assertEqual(0, SampleRun.objects.count())
         self.assertEqual(0, SampleManifest.objects.count())
         self.assertEqual(0, Sample.objects.count())
         self.assertEqual(0, Batch.objects.count())
