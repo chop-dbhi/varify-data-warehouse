@@ -4,8 +4,8 @@ from django.core.exceptions import ImproperlyConfigured
 __version_info__ = {
     'major': 0,
     'minor': 4,
-    'micro': 1,
-    'releaselevel': 'final',
+    'micro': 2,
+    'releaselevel': 'beta',
     'serial': 1
 }
 
