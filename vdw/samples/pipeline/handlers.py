@@ -52,9 +52,7 @@ def check_sample_section(manifest):
 def load_samples(manifest_path, database, **kwargs):
     manifest = ManifestReader(manifest_path)
 
-    # If a specific version of the genome is required then make sure the
-    # MANIFEST lists that version or abort the load process.
-    genome_version = getattr(settings, 'VDW_REQUIRED_GENOME_VERSION', None)
+    genome_version = settings.VDW_GENOME_VERSION
     if genome_version:
         genome_info = manifest.section('genome')
 

@@ -153,69 +153,7 @@ class SampleLoadTestCase(QueueTestCase):
         system = System.get(Sample.objects.all()[0])
         self.assertEqual(len(system), 3)
 
-    @override_settings(VDW_REQUIRED_GENOME_VERSION='hg19')
-    def test_missing_genome_section(self):
-        expected_counts = {
-            'batches': 1,
-            'results_per_sample': [
-                {
-                    'batch': 'batch1',
-                    'sample': 'NA12891',
-                    'count': 1963,
-                },
-                {
-                    'batch': 'batch1',
-                    'sample': 'NA12892',
-                    'count': 1963,
-                },
-                {
-                    'batch': 'batch1',
-                    'sample': 'NA12878',
-                    'count': 1963,
-                }
-            ],
-            'samples': 3,
-            'samples_per_batch': [(1, 3)],
-        }
-        expected_counts['results'] = \
-            sum([x['count'] for x in expected_counts['results_per_sample']])
-
-        # Immediately validates and creates a sample.
-        management.call_command('samples', 'queue')
-
-        # Synchronously work on queue.
-        worker1 = get_worker('variants')
-        worker2 = get_worker('default')
-
-        # Work on variants.
-        worker1.work(burst=True)
-
-        # Work on effects.
-        worker2.work(burst=True)
-
-        # Since the MANIFEST for Batch 2 has no genome version listed, we
-        # should only have data for samples in Batch 1. Perform all the checks
-        # against our trimmed list of expected counts.
-        self.assertEqual(Result.objects.count(), expected_counts['results'])
-
-        # Batches are now published..
-        self.assertEqual(Batch.objects.filter(published=True).count(),
-                         expected_counts['batches'])
-
-        # Ensure the counts are accurate for each sample..
-        for ec in expected_counts['results_per_sample']:
-            sample = Sample.objects.get(name=ec['sample'],
-                                        batch__name=ec['batch'])
-            self.assertTrue(sample.published)
-            self.assertEqual(sample.count, ec['count'])
-
-        # Batches are created with the samples, but are unpublished
-        for pk, count in expected_counts['samples_per_batch']:
-            batch = Batch.objects.get(pk=pk)
-            self.assertTrue(batch.published)
-            self.assertEqual(batch.count, count)
-
-    @override_settings(VDW_REQUIRED_GENOME_VERSION='hg18')
+    @override_settings(VDW_GENOME_VERSION='hg18')
     def test_wrong_genome_version(self):
         # Immediately validates and creates a sample.
         management.call_command('samples', 'queue')

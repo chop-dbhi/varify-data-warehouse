@@ -45,6 +45,10 @@ INSTALLED_APPS = (
     'sts',
 )
 
+# The genome version is a required setting. Change this to the version you are
+# using. This version must match the version defined in the MANIFEST when
+# loading samples.
+VDW_GENOME_VERSION = 'hg19'
 
 #
 # ADMINISTRATIVE
