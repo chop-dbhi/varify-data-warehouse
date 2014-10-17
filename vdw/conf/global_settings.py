@@ -42,6 +42,7 @@ INSTALLED_APPS = (
     'avocado.export',
     'modeltree',
     'reversion',
+    'sts',
 )
 
 
